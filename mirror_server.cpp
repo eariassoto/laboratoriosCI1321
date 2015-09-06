@@ -11,17 +11,17 @@ int main(int argc, char **argv){
 
   Socket s1, *s2;
 
-   s1.Bind( atoi( argv[1] ) );		
-   s1.Listen( 5 );		
+   s1.Bind( atoi( argv[1] ) );
+   s1.Listen( 5 );
 
    for( ; ; ) {
      // espera a tener una solicitud
-     s2 = s1.Accept();	 	
-     
-     childpid = fork();	
+     s2 = s1.Accept();
+
+     childpid = fork();
      if ( childpid < 0 )
          perror("server: fork error");
-     else if (childpid == 0) { 
+     else if (childpid == 0) {
        // proceso hijo
        char buf[512];
        for(int i = 0; i < 512; i++){
@@ -29,10 +29,11 @@ int main(int argc, char **argv){
        }
        // cierra el server
        s1.Close();
-       
+
        // lee la peticion y la escribe de nuevo al cliente
-       s2->Read( buf, 512 ); 
-       s2->Write( buf, 512 );	
+       s2->Read( buf, 512 );
+       cout << buf << endl;
+       s2->Write( buf, 512 );
        exit( 0 );
      }
      s2->Close();
