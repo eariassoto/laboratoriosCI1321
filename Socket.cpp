@@ -7,6 +7,8 @@
 #include <unistd.h> //close
 #include <string.h>
 #include <errno.h>
+#include <netdb.h>
+#include <cstring>
 
 using namespace std;
 
@@ -58,6 +60,19 @@ int Socket::Connect(char * Host, int Port)
   return connect( descriptor, (sockaddr *) & host_addr, len );
 }
 
+int Socket::Connect(int Port, char * Hostname)
+{
+  char Host[100];
+  HostnameToIP(Hostname, Host);
+
+  struct sockaddr_in host_addr;
+  host_addr.sin_family = AF_INET;
+  inet_aton( Host,  &host_addr.sin_addr );
+  host_addr.sin_port = htons( Port );
+  socklen_t len = sizeof( host_addr );
+  return connect( descriptor, (sockaddr *) & host_addr, len );
+}
+
 int Socket::Read(char * text, int len)
 {
 	return read(descriptor, text, len);
@@ -66,6 +81,16 @@ int Socket::Read(char * text, int len)
 int Socket::Write(char * text, int len)
 {
   int w = write(descriptor, text, len);
+	return w;
+}
+
+int Socket::Write(string text)
+{
+  int len = text.size();
+  char *cstr = new char[len + 1];
+  strcpy(cstr, text.c_str());
+  int w = write(descriptor, cstr, len);
+  delete [] cstr;
 	return w;
 }
 
@@ -100,4 +125,28 @@ Socket * Socket::Accept()
     s = new Socket(a);
   }
   return s;
+}
+
+
+int Socket::HostnameToIP(char * hostname , char* ip)
+{
+    struct hostent *he;
+    struct in_addr **addr_list;
+    int i;
+
+    if ( (he = gethostbyname( hostname ) ) == NULL)
+    {
+        herror("gethostbyname");
+        return 1;
+    }
+
+    addr_list = (struct in_addr **) he->h_addr_list;
+
+    for(i = 0; addr_list[i] != NULL; i++)
+    {
+        strcpy(ip , inet_ntoa(*addr_list[i]) );
+        return 0;
+    }
+
+    return 1;
 }
