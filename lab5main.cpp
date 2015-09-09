@@ -19,15 +19,40 @@ int main(int argc, char **argv){
     cout << a << endl;
   }else if(argc == 1){
     // mail
-    s.Connect( 587, "farroyo.ecci.ucr.ac.cr" );
-    s.Write("From: \"San Pedro\" <SanPedro@elcielo.com>");
-    s.Write("To: \"Usuario Redes\" <ci1320@farroyo.ecci.ucr.ac.cr>\n");
-    s.Write("Subject: \"Prueba de sockets\"" );
-    s.Write("\n");
-    s.Write("Hola, \n" );
-    s.Write("Esto es una prueba de envio de correos a farroyo 5-set \n");
-    s.Write(".\n");
+    s.Connect( 25, "farroyo.ecci.ucr.ac.cr" );
+
+    cout << "HELO elcielo.com" << endl;
+    s.Write("HELO elcielo.com\n");
     s.Read( a, 2048 );
     cout << a << endl;
+    for(int i = 0; i<2048; i++)
+      a[i] = 0;
+
+    cout << "MAIL FROM: <sanpedro@elcielo.com>" << endl;
+    s.Write("MAIL FROM: <sanpedro@elcielo.com>\n");
+    s.Read( a, 2048 );
+    cout << a << endl;
+    for(int i = 0; i<2048; i++)
+      a[i] = 0;
+
+    cout << "RCPT TO: <ci1320@farroyo.ecci.ucr.ac.cr>" << endl;
+    s.Write("RCPT TO: <ci1320@farroyo.ecci.ucr.ac.cr>\n");
+    s.Read( a, 2048 );
+    cout << a << endl;
+    for(int i = 0; i<2048; i++)
+      a[i] = 0;
+
+    cout << "DATA" << endl;
+    s.Write("DATA\n");
+    s.Read( a, 2048 );
+    cout << a << endl;
+    for(int i = 0; i<2048; i++)
+      a[i] = 0;
+
+    string str = "From: \"San Pedro\" <SanPedro@elcielo.com>\nTo: \"Usuario Redes\" <ci1320@farroyo.ecci.ucr.ac.cr>\nSubject: \"yolo swag2\"\n\nHola, \nEsto es una prueba de envio de correos a farroyo 9-set \n.\n";
+    cout << str;
+    s.Write(str);
+    s.Read( a, 2048 );
+
   }
 }
