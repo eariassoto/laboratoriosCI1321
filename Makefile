@@ -18,3 +18,16 @@ server: mirror_server.o Socket.o
 
 lab5: lab5main.o Socket.o
 	g++ lab5main.o Socket.o -o lab5
+
+lab6main.o: Socket.h Socket.cpp lab6main.cpp
+		g++ -c -g -Wno-write-strings Socket.cpp lab6main.cpp
+
+lab6: lab6main.o Socket.o
+		g++ -lresolv lab6main.o Socket.o -o lab6
+
+pruebacorreo.o: Socket.h Socket.cpp pruebacorreo.cpp
+				g++ -c -g -Wno-write-strings Socket.cpp pruebacorreo.cpp
+
+
+correo: pruebacorreo.o Socket.o
+				g++ -lresolv pruebacorreo.o Socket.o -o pruebacorreo
